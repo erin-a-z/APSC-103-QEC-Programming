@@ -20,10 +20,8 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
 
 user_data = sp.currently_playing()
 print(user_data)
-# print('My data:')
-# print('Name:', user_data['display_name'])
-# print('Followers:', user_data['followers']['total'])
-# print('Link:', user_data['external_urls']['spotify'])
-# print('Account:', user_data['product'])
+
+file1 = open("MyFile.json", "w")
+file1.write(str(user_data)) 
 
 
