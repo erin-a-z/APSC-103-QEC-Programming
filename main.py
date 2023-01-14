@@ -1,35 +1,29 @@
-import requests
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 
 CLIENT_ID = '1aecb5ea46cd426e803bcf5243929945'
 CLIENT_SECRET = '6da25e9118224e5c8b66ef1f9e76d2a3'
 
 AUTH_URL = 'https://accounts.spotify.com/api/token'
 
-# POST
-auth_response = requests.post(AUTH_URL, {
-    'grant_type': 'client_credentials',
-    'client_id': CLIENT_ID,
-    'client_secret': CLIENT_SECRET,
-})
+scopes = ["user-follow-read", 'ugc-image-upload', 'user-read-playback-state',
+          'user-modify-playback-state', 'user-read-currently-playing', 'user-read-private',
+          'user-read-email', 'user-follow-modify', 'user-follow-read', 'user-library-modify',
+          'user-library-read', 'streaming', 'app-remote-control', 'user-read-playback-position',
+          'user-top-read', 'user-read-recently-played', 'playlist-modify-private', 'playlist-read-collaborative',
+          'playlist-read-private', 'playlist-modify-public']
 
-# convert the response to JSON
-auth_response_data = auth_response.json()
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
+                                               client_secret=CLIENT_SECRET,
+                                               redirect_uri='http://127.0.0.1:9090',
+                                               scope=scopes))
 
-# save the access token
-access_token = auth_response_data['access_token']
+user_data = sp.currently_playing()
+print(user_data)
+# print('My data:')
+# print('Name:', user_data['display_name'])
+# print('Followers:', user_data['followers']['total'])
+# print('Link:', user_data['external_urls']['spotify'])
+# print('Account:', user_data['product'])
 
-headers = {
-    'Authorization': 'Bearer {token}'.format(token=access_token)
-}
 
-# base URL of all Spotify API endpoints
-BASE_URL = 'https://api.spotify.com/v1/'
-
-# Track ID from the URI
-# track_id = '6y0igZArWVi6Iz0rj35c1Y'
-
-# actual GET request with proper header
-r = requests.get(BASE_URL + 'me/player/recently-played', headers=headers)
-
-r = r.json()
-print(r)
